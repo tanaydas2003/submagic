@@ -1,4 +1,3 @@
-// VideoPreview.jsx
 import React, { useRef, useState, useEffect } from 'react';
 import { Box, Paper, Typography, IconButton, Slider, Button } from '@mui/material';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
