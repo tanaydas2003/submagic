@@ -1,4 +1,3 @@
-// Sidebar.jsx
 import React from 'react';
 import { Paper, Tabs, Tab, Typography, Box, Button, TextField, Slider } from '@mui/material';
 import TimelineEditor from './TimelineEditor';
