@@ -1,3 +1,4 @@
+// VideoPreview.jsx
 import React, { useRef, useState, useEffect } from 'react';
 import { Box, Paper, Typography, IconButton, Slider, Button } from '@mui/material';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
@@ -15,7 +16,8 @@ const VideoPreview = ({
   selectedTheme,
   selectedFilter,
   mediaItems,
-  onDeleteVideo, // Receive the delete video function
+  onDeleteVideo,
+  captionSize 
 }) => {
   const videoRef = useRef(null);
   const [currentTime, setCurrentTime] = useState(0);
@@ -23,12 +25,14 @@ const VideoPreview = ({
   const [isMuted, setIsMuted] = useState(false);
   const [duration, setDuration] = useState(0);
 
+  // Update currentTime state as video plays
   const handleVideoTimeUpdate = () => {
     if (videoRef.current) {
       setCurrentTime(videoRef.current.currentTime);
     }
   };
 
+  // Play or pause the video
   const handlePlayPause = () => {
     if (videoRef.current) {
       if (isPlaying) {
@@ -40,6 +44,7 @@ const VideoPreview = ({
     }
   };
 
+  // Mute or unmute the video
   const handleMuteToggle = () => {
     if (videoRef.current) {
       videoRef.current.muted = !isMuted;
@@ -47,6 +52,7 @@ const VideoPreview = ({
     }
   };
 
+  // Toggle fullscreen mode
   const handleFullscreenToggle = () => {
     if (videoRef.current) {
       if (videoRef.current.requestFullscreen) {
@@ -61,12 +67,14 @@ const VideoPreview = ({
     }
   };
 
+  // Set video duration once metadata is loaded
   const handleVideoLoaded = () => {
     if (videoRef.current) {
       setDuration(videoRef.current.duration);
     }
   };
 
+  // Seek to a specific time in the video
   const handleSeekChange = (event, newValue) => {
     if (videoRef.current) {
       videoRef.current.currentTime = newValue;
@@ -74,15 +82,17 @@ const VideoPreview = ({
     }
   };
 
+  // Format time in MM:SS
   const formatTime = (time) => {
     const minutes = Math.floor(time / 60);
     const seconds = Math.floor(time % 60);
     return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
   };
 
+  // Get the current theme or default
   const theme = themeStyles[selectedTheme] || themeStyles.default;
 
-  // Handle audio playback
+  // Handle audio playback synchronized with video
   useEffect(() => {
     mediaItems
       .filter((item) => item.mediaType === 'audio')
@@ -116,6 +126,7 @@ const VideoPreview = ({
           backgroundColor: '#000',
         }}
       >
+        {/* Video Element */}
         {videoURL ? (
           <video
             ref={videoRef}
@@ -136,6 +147,7 @@ const VideoPreview = ({
           </Typography>
         )}
 
+        {/* Display GIFs Over Video */}
         {mediaItems
           .filter(
             (item) =>
@@ -161,6 +173,7 @@ const VideoPreview = ({
             />
           ))}
 
+        {/* Display Images Over Video */}
         {mediaItems
           .filter(
             (item) =>
@@ -196,7 +209,7 @@ const VideoPreview = ({
               textAlign: 'center',
               color: theme.color,
               backgroundColor: theme.backgroundColor,
-              fontSize: theme.fontSize,
+              fontSize: `${captionSize}px`,
               padding: '10px',
               opacity: 0.9,
               zIndex: 3,
@@ -218,10 +231,12 @@ const VideoPreview = ({
               alignItems: 'center',
             }}
           >
+            {/* Play/Pause Button */}
             <IconButton onClick={handlePlayPause}>
               {isPlaying ? <PauseIcon /> : <PlayArrowIcon />}
             </IconButton>
 
+            {/* Delete Video Button */}
             <Button
               variant="contained"
               color="secondary"
@@ -237,6 +252,7 @@ const VideoPreview = ({
               Delete Video
             </Button>
 
+            {/* Mute and Fullscreen Buttons */}
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
               <IconButton onClick={handleMuteToggle}>
                 {isMuted ? <VolumeOffIcon /> : <VolumeUpIcon />}
@@ -247,6 +263,7 @@ const VideoPreview = ({
             </Box>
           </Box>
 
+          {/* Seek Slider */}
           <Box sx={{ mt: 2 }}>
             <Slider
               value={currentTime}
@@ -257,6 +274,7 @@ const VideoPreview = ({
             />
           </Box>
 
+          {/* Time Display */}
           <Box sx={{ mt: 1, textAlign: 'right' }}>
             <Typography variant="body2">
               {formatTime(currentTime)} / {formatTime(duration)}
@@ -265,6 +283,7 @@ const VideoPreview = ({
         </>
       )}
 
+      {/* Audio Elements */}
       {mediaItems
         .filter((item) => item.mediaType === 'audio')
         .map((item) => (
