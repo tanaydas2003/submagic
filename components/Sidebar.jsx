@@ -1,3 +1,4 @@
+// Sidebar.jsx
 import React from 'react';
 import { Paper, Tabs, Tab, Typography, Box, Button, TextField, Slider } from '@mui/material';
 import TimelineEditor from './TimelineEditor';
@@ -38,10 +39,12 @@ const Sidebar = ({
   selectedFilter,
   onFilterChange,
   onAddMedia,
-  onDeleteMedia, 
+  onDeleteMedia,
   mediaItems,
   videoDuration,
   intervals,
+  captionSize,
+  onCaptionSizeChange
 }) => {
   return (
     <Paper elevation={3} sx={{ width: '100%', height: 'auto', overflowY: 'auto', padding: 2 }}>
@@ -61,6 +64,7 @@ const Sidebar = ({
       <Box mt={4}>
         {activeTab === 0 && (
           <>
+            {/* Themes Section */}
             <Typography variant="h6">Themes</Typography>
             <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 1 }}>
               {themes.map((theme, index) => (
@@ -81,12 +85,25 @@ const Sidebar = ({
               ))}
             </Box>
 
+            {/* Position Y Slider */}
             <Box mt={4}>
               <Typography variant="body2">Position Y (for caption placement)</Typography>
               <Slider
                 value={positionY}
                 onChange={onPositionYChange}
                 min={0}
+                max={100}
+                valueLabelDisplay="auto"
+              />
+            </Box>
+            
+            {/* Caption Size Slider */}
+            <Box mt={4}>
+              <Typography variant="body2">Caption Text Size</Typography>
+              <Slider
+                value={captionSize}
+                onChange={onCaptionSizeChange}
+                min={10}
                 max={100}
                 valueLabelDisplay="auto"
               />
@@ -114,7 +131,7 @@ const Sidebar = ({
             <Typography variant="h6">B-rolls - Timeline Editor</Typography>
             <TimelineEditor
               onAddMedia={onAddMedia}
-              onDeleteMedia={onDeleteMedia} 
+              onDeleteMedia={onDeleteMedia}
               mediaItems={mediaItems}
               intervals={intervals}
               videoDuration={videoDuration}
