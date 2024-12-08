@@ -1,11 +1,12 @@
+// Frames.jsx
 'use client';
+
 import React, { useState } from 'react';
 import { Box, useMediaQuery } from '@mui/material';
 import Navbar2 from './Navbar2';
 import Sidebar from './Sidebar';
 import VideoPreview from './VideoPreview';
 import VideoControls from './VideoControls';
-
 
 const themeStyles = {
   'HORMOZI 1': {
@@ -126,20 +127,24 @@ const themeStyles = {
 };
 
 const Frames = () => {
+  // State Management
   const [activeTab, setActiveTab] = useState(0);
   const [selectedTheme, setSelectedTheme] = useState('HORMOZI 1');
   const [videoFile, setVideoFile] = useState(null);
   const [videoURL, setVideoURL] = useState(null);
   const [captions, setCaptions] = useState('');
   const [positionY, setPositionY] = useState(10);
+  const [captionSize, setCaptionSize] = useState(24);
   const [currentTime, setCurrentTime] = useState(0);
   const [selectedFilter, setSelectedFilter] = useState('none');
   const [mediaItems, setMediaItems] = useState([]);
   const [videoDuration, setVideoDuration] = useState(100); 
   const [intervals, setIntervals] = useState([]);
 
+  // Responsive Design Hook
   const isMobile = useMediaQuery('(max-width:600px)');
 
+  // Handlers
   const handleTabChange = (event, newValue) => setActiveTab(newValue);
   const handleThemeSelect = (theme) => setSelectedTheme(theme);
 
@@ -152,11 +157,11 @@ const Frames = () => {
       tempVideo.src = URL.createObjectURL(file);
       tempVideo.onloadedmetadata = () => {
         setVideoDuration(tempVideo.duration);
-        const numberOfIntervals = Math.ceil(tempVideo.duration / 30);
+        const numberOfIntervals = Math.ceil(tempVideo.duration / 3);
         const newIntervals = [];
         for (let i = 0; i < numberOfIntervals; i++) {
-          const startTime = i * 30;
-          const endTime = Math.min((i + 1) * 30, tempVideo.duration);
+          const startTime = i * 3; 
+          const endTime = Math.min((i + 1) * 3, tempVideo.duration); 
           newIntervals.push({ startTime, endTime });
         }
         setIntervals(newIntervals);
@@ -167,6 +172,9 @@ const Frames = () => {
   const handleCaptionChange = (e) => setCaptions(e.target.value);
   const handlePositionYChange = (event, newValue) => setPositionY(newValue);
   const handleFilterChange = (filter) => setSelectedFilter(filter);
+
+  // New handler for caption size change
+  const handleCaptionSizeChange = (event, newValue) => setCaptionSize(newValue);
 
   // Function to handle adding media from TimelineEditor
   const handleAddMedia = (mediaItem) => {
@@ -190,11 +198,15 @@ const Frames = () => {
     setSelectedFilter('none');
     setSelectedTheme('HORMOZI 1');
     setPositionY(10);
+    setCaptionSize(24); // Reset caption size to default
   };
 
   return (
     <>
+      {/* Navbar */}
       <Navbar2 />
+
+      {/* Main Content */}
       <Box
         sx={{
           display: 'flex',
@@ -223,10 +235,12 @@ const Frames = () => {
             mediaItems={mediaItems}
             videoDuration={videoDuration}
             intervals={intervals}
+            captionSize={captionSize} 
+            onCaptionSizeChange={handleCaptionSizeChange}
           />
         </Box>
 
-        {/* Video Preview */}
+        {/* Video Preview and Controls */}
         <Box sx={{ order: isMobile ? 1 : 0, width: isMobile ? '100%' : '48%' }}>
           <VideoPreview
             videoURL={videoURL}
@@ -237,16 +251,19 @@ const Frames = () => {
             selectedFilter={selectedFilter}
             mediaItems={mediaItems}
             onDeleteVideo={handleDeleteVideo} 
+            captionSize={captionSize}
           />
 
           {/* Video Upload Section */}
           {!videoURL && (
-            <input
-              type="file"
-              accept="video/*"
-              onChange={handleVideoUpload}
-              style={{ marginBottom: '20px' }}
-            />
+            <Box sx={{ mt: 2 }}>
+              <input
+                type="file"
+                accept="video/*"
+                onChange={handleVideoUpload}
+                style={{ marginBottom: '20px' }}
+              />
+            </Box>
           )}
 
           {/* Video Controls */}
