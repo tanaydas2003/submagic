@@ -204,7 +204,7 @@ const Frames = () => {
   return (
     <>
       {/* Navbar */}
-      <Navbar2 />
+      {/* <Navbar2 /> */}
 
       {/* Main Content */}
       <Box
